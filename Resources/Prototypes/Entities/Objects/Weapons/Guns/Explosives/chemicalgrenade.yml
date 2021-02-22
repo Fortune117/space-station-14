@@ -1,0 +1,17 @@
+﻿- type: entity
+  name: chemical grenade case
+  description: Building block for making chemical grenades.
+  parent: BaseItem
+  id: ChemGrenadeCase
+  components:
+    - type: Sprite
+      sprite: Objects/Weapons/Grenades/chemgrenade.rsi
+      layers:
+        - state: chem-grenade-0
+    - type: Construction
+      graph: chemGrenadeCase
+      node: chemGrenadeCase
+    - type: Item
+      size: 5
+      sprite: Objects/Weapons/Grenades/chemgrenade.rsi
+      prefix: inhand

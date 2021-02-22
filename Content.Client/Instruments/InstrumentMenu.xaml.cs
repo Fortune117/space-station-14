@@ -48,7 +48,7 @@ namespace Content.Client.Instruments
 
             if (!_midiManager.IsAvailable)
             {
-                UnavailableOverlay.Visible = true;
+                //UnavailableOverlay.Visible = true;
                 // We return early as to not give the buttons behavior.
                 return;
             }

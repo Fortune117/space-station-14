@@ -8,3 +8,16 @@
   description: A crude spear for when you need to put holes in somebody.
   icon: Objects/Weapons/Melee/spear.rsi/spear.png
   objectType: Item
+
+- type: construction
+  name: chemical grenade case
+  id: chemGrenadeCase
+  graph: chemGrenadeCase
+  startNode: start
+  targetNode: chemGrenadeCase
+  category: Weapons
+  description: The building block for a chemical grenade.
+  icon:
+    sprite: Objects/Weapons/Grenades/chemgrenade.rsi
+    state: chem-grenade-0
+  objectType: Item

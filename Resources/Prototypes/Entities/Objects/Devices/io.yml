@@ -1,0 +1,15 @@
+﻿- type: entity
+  name: timer
+  description: A small digital timer.
+  parent: BaseItem
+  id: TimedTrigger
+  components:
+    - type: Sprite
+      sprite: Objects/Devices/timer.rsi
+      layers:
+        - state: timer
+    - type: Item
+      size: 5
+      sprite: Objects/Devices/timer.rsi
+      prefix: inhand
+    - type: IoTimer
