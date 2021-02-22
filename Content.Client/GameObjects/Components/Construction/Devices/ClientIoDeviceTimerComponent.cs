@@ -12,7 +12,7 @@ namespace Content.Client.GameObjects.Components.Construction.Devices
     public class ClientIoDeviceTimerComponent : SharedIoDeviceTimerComponent
     {
 
-        public TimeSpan TimerDelay { get; set; }
+        public float TimerDelay { get; set; }
 
         public override void HandleComponentState(ComponentState curState, ComponentState nextState)
         {
@@ -22,10 +22,10 @@ namespace Content.Client.GameObjects.Components.Construction.Devices
             }
         }
 
-
-        public override void HandleNetworkMessage(ComponentMessage message, INetChannel netChannel, ICommonSession? session = null)
+        public void UpdateTimerDelay(float delay)
         {
-            base.HandleNetworkMessage(message, netChannel, session);
+            SendNetworkMessage(new IoDeviceTimerUpdateDelayMessage(delay));
         }
+
     }
 }

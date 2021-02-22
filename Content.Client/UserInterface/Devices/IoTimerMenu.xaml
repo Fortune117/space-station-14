@@ -1,0 +1,8 @@
+﻿<SS14Window xmlns="https://spacestation14.io"
+            Title = "{Loc 'Timer'}" >
+    <VBoxContainer SeparationOverride="5" MinWidth="300">
+        <Label Name ="InfoText" Text="Timer Length (in seconds)." HorizontalAlignment="Center"/>
+        <InputSlider Name ="InputSlider" SeparationOverride="2"/>
+        <Button Name="ConfirmButton" Text="Confirm" HorizontalExpand="True" MaxWidth="90"/>
+    </VBoxContainer>
+</SS14Window>

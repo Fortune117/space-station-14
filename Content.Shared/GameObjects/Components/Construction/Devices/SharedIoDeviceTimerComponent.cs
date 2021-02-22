@@ -1,4 +1,5 @@
-﻿using System;
+﻿#nullable enable
+using System;
 using Robust.Shared.GameObjects;
 using Robust.Shared.IoC;
 using Robust.Shared.Serialization;
@@ -25,25 +26,33 @@ namespace Content.Shared.GameObjects.Components.Construction.Devices
             serializer.DataField(ref MaxTimerDelay, "maxtime", 300f);
             serializer.DataField(ref MinTimerDelay, "mintime", 0f);
         }
+    }
 
-        [Serializable, NetSerializable]
-        public class IoDeviceTimerComponentState : ComponentState
+    [Serializable, NetSerializable]
+    public class IoDeviceTimerComponentState : ComponentState
+    {
+        public readonly float TimerDelay;
+
+        public IoDeviceTimerComponentState(float timerDelay) : base(ContentNetIDs.IODEVICE)
         {
-            public readonly TimeSpan TimerDelay;
-
-            public IoDeviceTimerComponentState(TimeSpan timerDelay) : base(ContentNetIDs.IODEVICE)
-            {
-                TimerDelay = timerDelay;
-            }
+            TimerDelay = timerDelay;
         }
+    }
 
-        [Serializable, NetSerializable]
-        public class IoDeviceTimerRequestGuiMessage : ComponentMessage
+    [Serializable, NetSerializable]
+    public class IoDeviceTimerUpdateDelayMessage : ComponentMessage
+    {
+        public readonly float NewDelay;
+        public IoDeviceTimerUpdateDelayMessage(float newDelay)
         {
-            public IoDeviceTimerRequestGuiMessage()
-            {
-                Directed = true;
-            }
+            Directed = true;
+            NewDelay = newDelay;
         }
+    }
+
+    [NetSerializable, Serializable]
+    public enum IoDeviceTimerUiKey
+    {
+        Key,
     }
 }
