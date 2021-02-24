@@ -71,7 +71,7 @@ namespace Content.Client.Construction
                     _constructionView.Close();
             }
         }
-        
+
         /// <summary>
         /// Constructs a new instance of <see cref="ConstructionMenuPresenter" />.
         /// </summary>
@@ -109,7 +109,12 @@ namespace Content.Client.Construction
             PopulateCategories();
             OnViewPopulateRecipes(_constructionView, (string.Empty, string.Empty));
 
-            _gameHud.CraftingButtonToggled += b => WindowOpen = b;
+            _gameHud.CraftingButtonToggled += OnHudCraftingButtonToggled;
+        }
+
+        private void OnHudCraftingButtonToggled(bool b)
+        {
+            WindowOpen = b;
         }
 
         /// <inheritdoc />
@@ -121,6 +126,8 @@ namespace Content.Client.Construction
             _systemManager.SystemUnloaded -= OnSystemUnloaded;
 
             _placementManager.PlacementChanged -= OnPlacementChanged;
+
+            _gameHud.CraftingButtonToggled -= OnHudCraftingButtonToggled;
         }
 
         private void OnPlacementChanged(object? sender, EventArgs e)
@@ -209,7 +216,7 @@ namespace Content.Client.Construction
 
         private void GenerateStepList(ConstructionPrototype prototype, ItemList stepList)
         {
-            if (!_prototypeManager.TryIndex(prototype.Graph, out ConstructionGraphPrototype graph))
+            if (!_prototypeManager.TryIndex(prototype.Graph, out ConstructionGraphPrototype? graph))
                 return;
 
             var startNode = graph.Nodes[prototype.StartNode];
@@ -423,7 +430,7 @@ namespace Content.Client.Construction
 
             _constructionView.BuildButtonPressed = true;
         }
-        
+
         private void OnSystemLoaded(object? sender, SystemChangedArgs args)
         {
             if (args.System is ConstructionSystem system) SystemBindingChanged(system);
