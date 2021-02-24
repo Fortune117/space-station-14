@@ -2,7 +2,7 @@
   name: timer
   description: A small digital timer.
   parent: BaseItem
-  id: IoTimer
+  id: DeviceTimerObject
   components:
     - type: Sprite
       sprite: Objects/Devices/timer.rsi
@@ -12,9 +12,11 @@
       size: 5
       sprite: Objects/Devices/timer.rsi
       prefix: inhand
-    - type: IoTimer
+    - type: DeviceTimer
     - type: UserInterface
       interfaces:
-      - key: enum.IoDeviceTimerUiKey.Key
-        type: IoTimerBoundUserInterface
+      - key: enum.TimerUiKey.Key
+        type: TimerBoundUserInterface
     - type: ContainerContainer
+    - type: SignalTransmitter
+      range: 5

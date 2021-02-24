@@ -9,14 +9,13 @@ using Robust.Shared.Players;
 namespace Content.Client.GameObjects.Components.Construction.Devices
 {
     [RegisterComponent]
-    public class ClientIoDeviceTimerComponent : SharedIoDeviceTimerComponent
+    public class ClientTimerComponent : SharedTimerComponent
     {
-
         public float TimerDelay { get; set; }
 
         public override void HandleComponentState(ComponentState curState, ComponentState nextState)
         {
-            if (curState is IoDeviceTimerComponentState componentState)
+            if (curState is TimerComponentState componentState)
             {
                 TimerDelay = componentState.TimerDelay;
             }
@@ -24,7 +23,7 @@ namespace Content.Client.GameObjects.Components.Construction.Devices
 
         public void UpdateTimerDelay(float delay)
         {
-            SendNetworkMessage(new IoDeviceTimerUpdateDelayMessage(delay));
+            SendNetworkMessage(new TimerUpdateDelayMessage(delay));
         }
 
     }

@@ -94,7 +94,7 @@ namespace Content.Shared.GameObjects
         // Used for clientside fake prediction of doors.
         public const uint DOOR = 1087;
         //Used for device trigger parts.
-        public const uint IODEVICE = 1088;
+        public const uint TIMER = 1088;
 
         // Net IDs for integration tests.
         public const uint PREDICTION_TEST = 10001;

@@ -8,12 +8,12 @@ using Robust.Shared.IoC;
 namespace Content.Client.UserInterface.Devices
 {
     [GenerateTypedNameReferences]
-    public partial class IoTimerMenu : SS14Window
+    public partial class TimerMenu : SS14Window
     {
-        private readonly IoTimerBoundUserInterface _owner;
+        private readonly TimerBoundUserInterface _owner;
 
-        private readonly ClientIoDeviceTimerComponent _timerComponent;
-        public IoTimerMenu(IoTimerBoundUserInterface owner)
+        private readonly ClientTimerComponent _timerComponent;
+        public TimerMenu(TimerBoundUserInterface owner)
         {
             _owner = owner;
 

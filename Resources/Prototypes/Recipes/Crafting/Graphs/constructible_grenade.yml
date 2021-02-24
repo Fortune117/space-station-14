@@ -21,7 +21,7 @@
             - !type:ContainerEmpty
               container: "trigger"
           steps:
-            - component: IoTimer
+            - tag: TinyTransmitter
               store: trigger #the trigger storage of the grenade
               doAfter: 2
 

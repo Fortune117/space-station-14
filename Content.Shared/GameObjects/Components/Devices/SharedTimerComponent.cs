@@ -10,9 +10,10 @@ using Robust.Shared.Timing;
 
 namespace Content.Shared.GameObjects.Components.Construction.Devices
 {
-    public abstract class SharedIoDeviceTimerComponent : SharedIoDeviceComponent
+    public abstract class SharedTimerComponent : Component
     {
-        public override string Name => "IoTimer";
+        public override string Name => "DeviceTimer";
+        public override uint? NetID => ContentNetIDs.TIMER;
 
         public float DefaultTimerDelaySeconds = 3f;
         public float MaxTimerDelay = 300f;
@@ -29,21 +30,21 @@ namespace Content.Shared.GameObjects.Components.Construction.Devices
     }
 
     [Serializable, NetSerializable]
-    public class IoDeviceTimerComponentState : ComponentState
+    public class TimerComponentState : ComponentState
     {
         public readonly float TimerDelay;
 
-        public IoDeviceTimerComponentState(float timerDelay) : base(ContentNetIDs.IODEVICE)
+        public TimerComponentState(float timerDelay) : base(ContentNetIDs.TIMER)
         {
             TimerDelay = timerDelay;
         }
     }
 
     [Serializable, NetSerializable]
-    public class IoDeviceTimerUpdateDelayMessage : ComponentMessage
+    public class TimerUpdateDelayMessage : ComponentMessage
     {
         public readonly float NewDelay;
-        public IoDeviceTimerUpdateDelayMessage(float newDelay)
+        public TimerUpdateDelayMessage(float newDelay)
         {
             Directed = true;
             NewDelay = newDelay;
@@ -51,7 +52,7 @@ namespace Content.Shared.GameObjects.Components.Construction.Devices
     }
 
     [NetSerializable, Serializable]
-    public enum IoDeviceTimerUiKey
+    public enum TimerUiKey
     {
         Key,
     }

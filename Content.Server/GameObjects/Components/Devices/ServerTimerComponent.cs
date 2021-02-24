@@ -46,7 +46,7 @@ namespace Content.Server.GameObjects.Components.Construction.Devices
 {
 
     [RegisterComponent]
-    public class ServerIoDeviceTimerComponent : SharedIoDeviceTimerComponent, IUse, IDropped, IThrown, IIoDevice
+    public class ServerTimerComponent : SharedTimerComponent, IUse, IDropped, IThrown
     {
         private float _timerDelay;
         // Make it a property so we can call Dirty()
@@ -63,11 +63,7 @@ namespace Content.Server.GameObjects.Components.Construction.Devices
         }
 
         [ViewVariables]
-        private BoundUserInterface? UserInterface => Owner.GetUIOrNull(IoDeviceTimerUiKey.Key);
-
-        //IIoDevice IsOn bool. This is whether or no the device itself is on, rather than whether or no the timer is active.
-        public bool IsOn { get; set; } = true;
-
+        private BoundUserInterface? UserInterface => Owner.GetUIOrNull(TimerUiKey.Key);
         public bool TimerActive { get; set; } = false;
 
         private CancellationTokenSource _tokenSource = new CancellationTokenSource();
@@ -88,7 +84,7 @@ namespace Content.Server.GameObjects.Components.Construction.Devices
         // Create the component state for the networking system.
         public override ComponentState GetComponentState(ICommonSession player)
         {
-            return new IoDeviceTimerComponentState(TimerDelay);
+            return new TimerComponentState(TimerDelay);
         }
 
         void IDropped.Dropped(DroppedEventArgs eventArgs)
@@ -114,9 +110,9 @@ namespace Content.Server.GameObjects.Components.Construction.Devices
         }
 
         [Verb]
-        private sealed class ConfigureVerb : Verb<ServerIoDeviceTimerComponent>
+        private sealed class ConfigureVerb : Verb<ServerTimerComponent>
         {
-            protected override void GetData(IEntity user, ServerIoDeviceTimerComponent component, VerbData data)
+            protected override void GetData(IEntity user, ServerTimerComponent component, VerbData data)
             {
                 if (!ActionBlockerSystem.CanInteract(user))
                 {
@@ -127,7 +123,7 @@ namespace Content.Server.GameObjects.Components.Construction.Devices
                 data.Text = Loc.GetString("Configure");
             }
 
-            protected override void Activate(IEntity user, ServerIoDeviceTimerComponent component)
+            protected override void Activate(IEntity user, ServerTimerComponent component)
             {
                 IPlayerSession? playerSession = user.PlayerSession();
 
@@ -137,9 +133,9 @@ namespace Content.Server.GameObjects.Components.Construction.Devices
         }
 
         [Verb]
-        private sealed class StartTimerVerb : Verb<ServerIoDeviceTimerComponent>
+        private sealed class StartTimerVerb : Verb<ServerTimerComponent>
         {
-            protected override void GetData(IEntity user, ServerIoDeviceTimerComponent component, VerbData data)
+            protected override void GetData(IEntity user, ServerTimerComponent component, VerbData data)
             {
                 if (!ActionBlockerSystem.CanInteract(user))
                 {
@@ -150,7 +146,7 @@ namespace Content.Server.GameObjects.Components.Construction.Devices
                 data.Text = Loc.GetString("Start Timer");
             }
 
-            protected override void Activate(IEntity user, ServerIoDeviceTimerComponent component)
+            protected override void Activate(IEntity user, ServerTimerComponent component)
             {
                 IPlayerSession? playerSession = user.PlayerSession();
 
@@ -171,7 +167,7 @@ namespace Content.Server.GameObjects.Components.Construction.Devices
         {
         }
 
-        private void UpdateDelay(IoDeviceTimerUpdateDelayMessage message)
+        private void UpdateDelay(TimerUpdateDelayMessage message)
         {
             TimerDelay = Math.Clamp(message.NewDelay, MinTimerDelay, MaxTimerDelay);
 
@@ -186,7 +182,7 @@ namespace Content.Server.GameObjects.Components.Construction.Devices
 
             switch (message)
             {
-                case IoDeviceTimerUpdateDelayMessage updateDelayMessage:
+                case TimerUpdateDelayMessage updateDelayMessage:
                     UpdateDelay(updateDelayMessage);
                     break;
             }
@@ -220,18 +216,6 @@ namespace Content.Server.GameObjects.Components.Construction.Devices
             else
             {
                 StartTimer();
-            }
-        }
-
-        void IIoDevice.InputReceived(IoSignal signal)
-        {
-            //Only activate if the timer is on.
-            if (IsOn)
-            {
-                if (signal.SignalType == IoSignal.Type.Activate)
-                {
-                    ToggleTimer();
-                }
             }
         }
     }

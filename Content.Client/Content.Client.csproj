@@ -32,6 +32,9 @@
     <Compile Update="UserInterface\OptionsMenu.Audio.cs">
       <DependentUpon>OptionsMenu.cs</DependentUpon>
     </Compile>
+    <Compile Update="UserInterface\Devices\TimerMenu.xaml.cs">
+      <DependentUpon>TimerMenu.xaml</DependentUpon>
+    </Compile>
   </ItemGroup>
 
   <Import Project="..\RobustToolbox\MSBuild\XamlIL.targets" />

@@ -1,4 +1,5 @@
-﻿using Content.Shared.Interfaces.GameObjects.Components;
+﻿using Content.Server.GameObjects.Components.Construction.Devices;
+using Content.Shared.Interfaces.GameObjects.Components;
 using Robust.Server.GameObjects;
 using Robust.Shared.GameObjects;
 using Robust.Shared.IoC;
@@ -10,15 +11,19 @@ namespace Content.Server.GameObjects.Components.Weapon.Explosive
     {
         public override string Name => "CraftableGrenade";
 
+        private IContainer _triggerContainer;
+
+        public override void Initialize()
+        {
+            base.Initialize();
+
+            _triggerContainer = ContainerManagerComponent.Ensure<Container>("trigger", Owner);
+        }
+
         private void DeviceActivated()
         {
-            IContainer container = ContainerManagerComponent.Ensure<Container>("trigger", Owner);
-
-            foreach (IEntity entity in container.ContainedEntities)
-            {
-
-            }
         }
+        
         public bool UseEntity(UseEntityEventArgs eventArgs)
         {
             DeviceActivated();

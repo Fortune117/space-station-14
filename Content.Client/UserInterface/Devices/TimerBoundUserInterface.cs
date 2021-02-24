@@ -6,22 +6,22 @@ using Robust.Shared.ViewVariables;
 
 namespace Content.Client.UserInterface.Devices
 {
-    public class IoTimerBoundUserInterface : BoundUserInterface
+    public class TimerBoundUserInterface : BoundUserInterface
     {
         [ViewVariables]
-        private IoTimerMenu _timerMenu;
-        public ClientIoDeviceTimerComponent TimerComponent { get; set; }
+        private TimerMenu _timerMenu;
+        public ClientTimerComponent TimerComponent { get; set; }
 
-        public IoTimerBoundUserInterface([NotNull] ClientUserInterfaceComponent owner, [NotNull] object uiKey) : base(owner, uiKey)
+        public TimerBoundUserInterface([NotNull] ClientUserInterfaceComponent owner, [NotNull] object uiKey) : base(owner, uiKey)
         {
         }
 
         protected override void Open()
         {
-            if (!Owner.Owner.TryGetComponent<ClientIoDeviceTimerComponent>(out var timerComponent)) return;
+            if (!Owner.Owner.TryGetComponent<ClientTimerComponent>(out var timerComponent)) return;
 
             TimerComponent = timerComponent;
-            _timerMenu = new IoTimerMenu(this);
+            _timerMenu = new TimerMenu(this);
             _timerMenu.OnClose += Close;
             _timerMenu.OpenCentered();
         }
