@@ -8,6 +8,7 @@ using Content.Server.GameObjects.Components.Access;
 using Content.Server.GameObjects.Components.Atmos;
 using Content.Server.GameObjects.Components.GUI;
 using Content.Server.GameObjects.Components.Interactable;
+using Content.Server.GameObjects.Components.Items.Storage;
 using Content.Server.GameObjects.Components.Mobs;
 using Content.Server.GameObjects.EntitySystems;
 using Content.Server.Interfaces.GameObjects.Components.Doors;
@@ -20,10 +21,14 @@ using Content.Shared.GameObjects.Components.Doors;
 using Content.Shared.GameObjects.Components.Instruments;
 using Content.Shared.GameObjects.Components.Interactable;
 using Content.Shared.GameObjects.Components.Movement;
+using Content.Shared.GameObjects.EntitySystems.ActionBlocker;
+using Content.Shared.GameObjects.Verbs;
+using Content.Shared.Interfaces;
 using Content.Shared.Interfaces.GameObjects.Components;
 using Robust.Server.GameObjects;
 using Robust.Server.Player;
 using Robust.Shared.Audio;
+using Robust.Shared.Containers;
 using Robust.Shared.GameObjects;
 using Robust.Shared.IoC;
 using Robust.Shared.Localization;
@@ -41,7 +46,7 @@ namespace Content.Server.GameObjects.Components.Construction.Devices
 {
 
     [RegisterComponent]
-    public class ServerIoDeviceTimerComponent : SharedIoDeviceTimerComponent, IUse, IDropped, IThrown
+    public class ServerIoDeviceTimerComponent : SharedIoDeviceTimerComponent, IUse, IDropped, IThrown, IIoDevice
     {
         private float _timerDelay;
         // Make it a property so we can call Dirty()
@@ -59,6 +64,14 @@ namespace Content.Server.GameObjects.Components.Construction.Devices
 
         [ViewVariables]
         private BoundUserInterface? UserInterface => Owner.GetUIOrNull(IoDeviceTimerUiKey.Key);
+
+        //IIoDevice IsOn bool. This is whether or no the device itself is on, rather than whether or no the timer is active.
+        public bool IsOn { get; set; } = true;
+
+        public bool TimerActive { get; set; } = false;
+
+        private CancellationTokenSource _tokenSource = new CancellationTokenSource();
+        private CancellationToken _token;
 
         public override void Initialize()
         {
@@ -93,9 +106,60 @@ namespace Content.Server.GameObjects.Components.Construction.Devices
             if (!eventArgs.User.TryGetComponent(out IActorComponent? actor))
                 return false;
 
-            OpenUserInterface(actor.playerSession);
+            ToggleTimer();
+
+            Owner.PopupMessage(actor.Owner, "You start the timer.");
 
             return true;
+        }
+
+        [Verb]
+        private sealed class ConfigureVerb : Verb<ServerIoDeviceTimerComponent>
+        {
+            protected override void GetData(IEntity user, ServerIoDeviceTimerComponent component, VerbData data)
+            {
+                if (!ActionBlockerSystem.CanInteract(user))
+                {
+                    data.Visibility = VerbVisibility.Invisible;
+                    return;
+                }
+
+                data.Text = Loc.GetString("Configure");
+            }
+
+            protected override void Activate(IEntity user, ServerIoDeviceTimerComponent component)
+            {
+                IPlayerSession? playerSession = user.PlayerSession();
+
+                if (playerSession != null)
+                    component.OpenUserInterface(playerSession);
+            }
+        }
+
+        [Verb]
+        private sealed class StartTimerVerb : Verb<ServerIoDeviceTimerComponent>
+        {
+            protected override void GetData(IEntity user, ServerIoDeviceTimerComponent component, VerbData data)
+            {
+                if (!ActionBlockerSystem.CanInteract(user))
+                {
+                    data.Visibility = VerbVisibility.Invisible;
+                    return;
+                }
+
+                data.Text = Loc.GetString("Start Timer");
+            }
+
+            protected override void Activate(IEntity user, ServerIoDeviceTimerComponent component)
+            {
+                IPlayerSession? playerSession = user.PlayerSession();
+
+                if (playerSession != null)
+                {
+                   component.ToggleTimer();
+                   playerSession.AttachedEntity.PopupMessage(playerSession.AttachedEntity, "You start the timer.");
+                }
+            }
         }
 
         public void OpenUserInterface(IPlayerSession playerSession)
@@ -112,6 +176,7 @@ namespace Content.Server.GameObjects.Components.Construction.Devices
             TimerDelay = Math.Clamp(message.NewDelay, MinTimerDelay, MaxTimerDelay);
 
             //TODO: Implement proper localisation
+
             Owner.PopupMessageEveryone("The timer beeps in acknowledgement.", range: 5);
         }
 
@@ -124,6 +189,49 @@ namespace Content.Server.GameObjects.Components.Construction.Devices
                 case IoDeviceTimerUpdateDelayMessage updateDelayMessage:
                     UpdateDelay(updateDelayMessage);
                     break;
+            }
+        }
+
+        public void StartTimer()
+        {
+            TimerActive = true;
+            _token = _tokenSource.Token;
+            Timer.Spawn(TimeSpan.FromSeconds(TimerDelay), TimerFinished, _token);
+        }
+
+        public void CancelTimer()
+        {
+            TimerActive = false;
+           _tokenSource.Cancel();
+        }
+
+        public void TimerFinished()
+        {
+            TimerActive = false;
+            Owner.PopupMessageEveryone("*BEEP BEEP BEEP*", range: 5);
+        }
+
+        public void ToggleTimer()
+        {
+            if (TimerActive)
+            {
+                CancelTimer();
+            }
+            else
+            {
+                StartTimer();
+            }
+        }
+
+        void IIoDevice.InputReceived(IoSignal signal)
+        {
+            //Only activate if the timer is on.
+            if (IsOn)
+            {
+                if (signal.SignalType == IoSignal.Type.Activate)
+                {
+                    ToggleTimer();
+                }
             }
         }
     }

@@ -8,23 +8,23 @@
   },
   "states": [
     {
-      "name": "chem-grenade-0",
+      "name": "const-grenade-0",
       "directions": 1
     },
     {
-      "name": "chem-grenade-1",
+      "name": "const-grenade-1",
       "directions": 1
     },
     {
-      "name": "chem-grenade-2",
+      "name": "const-grenade-2",
       "directions": 1
     },
     {
-      "name": "chem-grenade-3",
+      "name": "const-grenade-3",
       "directions": 1
     },
     {
-        "name": "chem-grenade-primed",
+        "name": "const-grenade-primed",
         "directions": 1,
         "delays": [
             [0.2, 0.2]

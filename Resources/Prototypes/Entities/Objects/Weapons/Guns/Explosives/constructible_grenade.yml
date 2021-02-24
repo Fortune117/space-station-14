@@ -1,0 +1,17 @@
+﻿- type: entity
+  name: constructible grenade case
+  description: Building block for making grenades.
+  parent: BaseItem
+  id: ConstructibleGrenade
+  components:
+    - type: Sprite
+      sprite: Objects/Weapons/Grenades/constructiblegrenade.rsi
+      state: const-grenade-1
+    - type: Construction
+      graph: constGrenade
+      node: constGrenade
+    - type: Item
+      size: 5
+      sprite: Objects/Weapons/Grenades/constructiblegrenade.rsi
+      prefix: inhand
+    - type: CraftableGrenade

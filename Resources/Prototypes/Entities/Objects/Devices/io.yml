@@ -17,3 +17,4 @@
       interfaces:
       - key: enum.IoDeviceTimerUiKey.Key
         type: IoTimerBoundUserInterface
+    - type: ContainerContainer
