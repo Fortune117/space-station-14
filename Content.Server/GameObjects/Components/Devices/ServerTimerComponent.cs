@@ -9,6 +9,8 @@ using Content.Server.GameObjects.Components.Atmos;
 using Content.Server.GameObjects.Components.GUI;
 using Content.Server.GameObjects.Components.Interactable;
 using Content.Server.GameObjects.Components.Items.Storage;
+using Content.Server.GameObjects.Components.MachineLinking;
+using Content.Server.GameObjects.Components.MachineLinking.Signals;
 using Content.Server.GameObjects.Components.Mobs;
 using Content.Server.GameObjects.EntitySystems;
 using Content.Server.Interfaces.GameObjects.Components.Doors;
@@ -46,7 +48,8 @@ namespace Content.Server.GameObjects.Components.Construction.Devices
 {
 
     [RegisterComponent]
-    public class ServerTimerComponent : SharedTimerComponent, IUse, IDropped, IThrown
+    [ComponentReference(typeof(ISignalReceiver<ToggleSignal>))]
+    public class ServerTimerComponent : SharedTimerComponent, IUse, IDropped, IThrown, ISignalReceiver<ToggleSignal>
     {
         private float _timerDelay;
         // Make it a property so we can call Dirty()
@@ -68,6 +71,9 @@ namespace Content.Server.GameObjects.Components.Construction.Devices
 
         private CancellationTokenSource _tokenSource = new CancellationTokenSource();
         private CancellationToken _token;
+
+        [ComponentDependency]
+        private SignalTransmitterComponent? _transmitter;
 
         public override void Initialize()
         {
@@ -205,6 +211,7 @@ namespace Content.Server.GameObjects.Components.Construction.Devices
         {
             TimerActive = false;
             Owner.PopupMessageEveryone("*BEEP BEEP BEEP*", range: 5);
+            _transmitter?.TransmitSignal(new ToggleSignal());
         }
 
         public void ToggleTimer()
@@ -217,6 +224,11 @@ namespace Content.Server.GameObjects.Components.Construction.Devices
             {
                 StartTimer();
             }
+        }
+
+        public void TriggerSignal(ToggleSignal signal)
+        {
+            ToggleTimer();
         }
     }
 }

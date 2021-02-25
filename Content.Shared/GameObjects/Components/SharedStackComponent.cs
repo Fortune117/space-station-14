@@ -144,6 +144,7 @@ namespace Content.Shared.GameObjects.Components
         GroundTobacco,
         GroundCannabis,
         LeavesTobaccoDried,
-        LeavesCannabisDried
+        LeavesCannabisDried,
+        Explosive
     }
 }

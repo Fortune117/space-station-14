@@ -21,7 +21,7 @@
             - !type:ContainerEmpty
               container: "trigger"
           steps:
-            - tag: TinyTransmitter
+            - component: DeviceTimer
               store: trigger #the trigger storage of the grenade
               doAfter: 2
 
@@ -29,3 +29,51 @@
       actions:
         - !type:SpriteStateChange
           state: "const-grenade-1"
+      edges:
+        - to: constGrenade #taking the trigger out
+          completed:
+            - !type:EmptyContainer
+              container: "trigger"
+          steps:
+            - tool: Screwing # As specified in the ToolQuality enum.
+              doAfter: 0.25
+        - to: constGrenadeWithTriggerAndExplosiveCore #taking the trigger out
+          steps:
+            - component: BombCore
+              store: payload #the trigger storage of the grenade
+              doAfter: 2
+
+    - node: constGrenadeWithTriggerAndExplosiveCore
+      actions:
+        - !type:SpriteStateChange
+          state: "const-grenade-3"
+
+- type: constructionGraph
+  id: bombCore
+  start: start
+  graph:
+    - node: start
+      edges:
+        - to: bombCoreEmpty
+          steps:
+            - material: Metal
+              amount: 1
+              doAfter: 1
+
+    - node: bombCoreEmpty
+      entity: BombCore
+      actions:
+        - !type:SpriteStateChange
+          state: "bombcore-empty"
+      edges:
+        - to: bombCoreWithExplosive
+          steps:
+            - prototype: PlasticExplosive
+              store: payload
+              name: explosives
+              doAfter: 1
+
+    - node: bombCoreWithExplosive
+      actions:
+        - !type:SpriteStateChange
+          state: "bombcore-armed"

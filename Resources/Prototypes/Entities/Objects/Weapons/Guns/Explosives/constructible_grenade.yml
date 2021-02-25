@@ -15,3 +15,51 @@
       sprite: Objects/Weapons/Grenades/constructiblegrenade.rsi
       prefix: inhand
     - type: CraftableGrenade
+    - type: Damageable
+    - type: Destructible
+      thresholds:
+        - trigger:
+            !type:DamageTrigger
+            damage: 10
+          behaviors:
+            - !type:DoActsBehavior
+              acts: ["Destruction"]
+
+- type: entity
+  name: bomb core
+  description: A case designed to house explosives or chemicals. Can be loaded with either two chemicals or an explosive compound. Will detonate upon receiving a signal.
+  parent: BaseItem
+  id: BombCore
+  components:
+    - type: Sprite
+      sprite: Objects/Weapons/Grenades/bombcore.rsi
+      state: bombcore-empty
+    - type: Construction
+      graph: bombCore
+      node: bombCoreEmpty
+    - type: Item
+      size: 3
+      sprite: Objects/Weapons/Grenades/bombcore.rsi
+      prefix: inhand
+    - type: BombCore
+    - type: SignalReceiver
+      maxTransmitters: 5
+
+
+- type: entity
+  name: plastic explosive
+  description: Plastic explosive ready to be deployed.
+  parent: BaseItem
+  id: PlasticExplosive
+  components:
+    - type: Sprite
+      sprite: Objects/Materials/sheets.rsi
+      state: plastic
+    - type: Item
+      size: 2
+      sprite: Objects/Materials/sheets.rsi
+      prefix: inhand
+    - type: Explosive
+      devastationRange: 0
+      heavyImpactRange: 2
+      lightImpactRange: 4

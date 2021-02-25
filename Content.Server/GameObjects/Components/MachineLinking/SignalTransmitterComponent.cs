@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Content.Server.GameObjects.Components.Interactable;
 using Content.Shared.GameObjects.Components.Interactable;
@@ -89,7 +90,7 @@ namespace Content.Server.GameObjects.Components.MachineLinking
                 return false;
             }
 
-            foreach (var receiver in _receivers)
+            foreach (var receiver in _receivers.ToList())
             {
                 if (Range > 0 && !Owner.Transform.Coordinates.InRange(Owner.EntityManager, receiver.Owner.Transform.Coordinates, Range))
                 {
@@ -144,7 +145,7 @@ namespace Content.Server.GameObjects.Components.MachineLinking
         {
             base.Shutdown();
 
-            for (var i = _receivers.Count-1; i >= 0; i++)
+            for (var i = _receivers.Count-1; i >= 0; i--)
             {
                 var receiver = _receivers[i];
                 if (receiver.Deleted)
