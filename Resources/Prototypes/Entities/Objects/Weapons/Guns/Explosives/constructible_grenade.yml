@@ -44,6 +44,8 @@
     - type: BombCore
     - type: SignalReceiver
       maxTransmitters: 5
+    - type: SolutionContainer
+      maxVol: 100
 
 
 - type: entity

@@ -36,7 +36,7 @@
               container: "trigger"
           steps:
             - tool: Screwing # As specified in the ToolQuality enum.
-              doAfter: 0.25
+              doAfter: 0.5
         - to: constGrenadeWithTriggerAndExplosiveCore #taking the trigger out
           steps:
             - component: BombCore
@@ -47,6 +47,14 @@
       actions:
         - !type:SpriteStateChange
           state: "const-grenade-3"
+      edges:
+        - to: constGrenadeWithTrigger #taking the trigger out
+          completed:
+            - !type:EmptyContainer
+              container: "payload"
+          steps:
+            - tool: Screwing
+              doAfter: 0.5
 
 - type: constructionGraph
   id: bombCore
@@ -72,8 +80,51 @@
               store: payload
               name: explosives
               doAfter: 1
+        - to: bombCoreWithOneReagent
+          steps:
+            - anyTags:
+                - GlassBeaker
+              store: reagents
+              doAfter: 1
 
     - node: bombCoreWithExplosive
       actions:
         - !type:SpriteStateChange
           state: "bombcore-armed"
+      edges:
+        - to: bombCoreEmpty
+          completed:
+            - !type:EmptyAllContainers
+          steps:
+            - tool: Screwing # As specified in the ToolQuality enum.
+              doAfter: 0.5
+
+    - node: bombCoreWithOneReagent
+      actions:
+        - !type:SpriteStateChange
+          state: "bombcore-armed-chem-half"
+      edges:
+        - to: bombCoreWithReagents
+          steps:
+            - anyTags:
+                - GlassBeaker
+              store: reagents
+              doAfter: 1
+        - to: bombCoreEmpty
+          completed:
+            - !type:EmptyAllContainers
+          steps:
+            - tool: Screwing # As specified in the ToolQuality enum.
+              doAfter: 0.5
+
+    - node: bombCoreWithReagents
+      actions:
+        - !type:SpriteStateChange
+          state: "bombcore-armed-chem"
+      edges:
+        - to: bombCoreEmpty
+          completed:
+            - !type:EmptyAllContainers
+          steps:
+            - tool: Screwing # As specified in the ToolQuality enum.
+              doAfter: 0.5

@@ -21,6 +21,14 @@
             "name": "bombcore-armed",
             "directions": 1,
             "delays": [[0.6, 0.6, 0.6]]
+        },
+        {
+            "name": "bombcore-armed-chem",
+            "directions": 1
+        },
+        {
+            "name": "bombcore-armed-chem-half",
+            "directions": 1
         }
     ]
 }
